@@ -1,0 +1,16 @@
+{
+  "canisters": {
+    "User": {
+      "main": "src/TestMotoko_backend/controllers/userCanister.mo",
+      "type": "motoko"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": "mops sources"
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
