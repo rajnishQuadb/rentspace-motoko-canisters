@@ -19,6 +19,10 @@
     "Booking":{
       "main": "src/TestMotoko_backend/controllers/bookingCanister.mo",
       "type": "motoko"
+    },
+    "Hotel": {
+      "main": "src/TestMotoko_backend/controllers/hotelCanister.mo",
+      "type": "motoko"
     }
   },
   "defaults": {

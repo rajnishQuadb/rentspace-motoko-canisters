@@ -9,6 +9,7 @@ import Error "mo:base/Error";
 import Debug "mo:base/Debug";
 import Time "mo:base/Time";
 import Char "mo:base/Char";
+import Bool "mo:base/Bool";
 import DateTime "mo:datetime/DateTime";
 import Month "../utils/month";
 // import UserTypes "../types/userTypes";
@@ -32,7 +33,6 @@ shared ({ caller = owner }) actor class User() {
                     var counter = 0;
                     var year = "";
                     var month = "";
-                    var jj="";
 
                     for (i in Text.toIter(date)) {
                         if (counter <= 3) {
@@ -186,9 +186,9 @@ shared ({ caller = owner }) actor class User() {
     // Get anual registered users
     public shared ({ caller }) func getAnnualRegisterByYear(year : Text) : async Result.Result<UserModal.AnnualData, Text> {
         try {
-            // if (UtilityFunc.getAdminFromArray(caller, admin) == false) {
-            //     return #err("User not authorized to access this data");
-            // };
+            if (UtilityFunc.getAdminFromArray(caller, admin) == false) {
+                return #err("User not authorized to access this data");
+            };
             switch (anualRegisterFrequency.get(year)) {
                 case (null) {
                     return #err("No user registered in this year");
@@ -202,6 +202,22 @@ shared ({ caller = owner }) actor class User() {
         };
     };
 
+    // Whoami function
+    public shared ({ caller }) func whoami() : async Text {
+        // Principal.toText(caller);
+        return Principal.toText(caller);
+    };
 
+    // check User Exist
+    public query func checkUserExist(userId : Text) : async Bool {
+        switch (userRecord.get(Principal.fromText(userId))) {
+            case (null) {
+                return false;
+            };
+            case (?user) {
+                return true;
+            };
+        };
+    };
 
 };
