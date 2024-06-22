@@ -7,6 +7,18 @@
     "Comment":{
       "main": "src/TestMotoko_backend/controllers/commentCanister.mo",
       "type": "motoko"
+    },
+    "Review":{
+      "main": "src/TestMotoko_backend/controllers/reviewCanister.mo",
+      "type": "motoko"
+    },
+    "Support":{
+      "main": "src/TestMotoko_backend/controllers/supportCanister.mo",
+      "type": "motoko"
+    },
+    "Booking":{
+      "main": "src/TestMotoko_backend/controllers/bookingCanister.mo",
+      "type": "motoko"
     }
   },
   "defaults": {
