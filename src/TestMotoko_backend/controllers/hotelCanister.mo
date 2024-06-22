@@ -94,7 +94,7 @@ shared ({ caller = owner }) actor class () {
             };
 
             // hotel ID creation
-            let uuid = await UtilityFunc.generateUUID();
+            let uuid = await UtilityFunc.getUuid();
             let hotelId : HotelModal.HotelId = userIdentity # "#" # uuid;
 
             // update hotelIdMap with new hotelId
@@ -239,7 +239,7 @@ shared ({ caller = owner }) actor class () {
         catch e{
             return #err(Error.message(e));
         };
-    }
+    };
 
     // get Hotel Register Frequency Data
     public query func getHotelRegisterFrequencyData(year : HotelModal.Year) : async Result.Result<HotelModal.AnnualData, Text> {
