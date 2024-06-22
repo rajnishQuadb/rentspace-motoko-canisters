@@ -17,7 +17,7 @@ shared ({caller=owner}) actor class Comment(){
     //createCiomment
     //getCommentsonHOtel
     
-
+    //creates on comment on a hotel
     public shared({caller}) func createComment(hotelId:Text,comment:CommentTypes.CommentInput):async Result.Result<CommentTypes.Comment,Text>{
         try{
             //check hotel and user exists
@@ -53,6 +53,7 @@ shared ({caller=owner}) actor class Comment(){
         }
     };
 
+    // returns comments on a hotel
     public query func getComments(hotelId:Text):async Result.Result<[CommentTypes.Comment],Text>{
         try{
             switch(commentRecord.get(hotelId)){
@@ -69,6 +70,7 @@ shared ({caller=owner}) actor class Comment(){
 
     };
 
+    // returns principal of caller
     public shared({caller}) func whoami():async Text{
         return Principal.toText(caller);
     };
