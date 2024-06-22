@@ -5,6 +5,8 @@ import Time "mo:base/Time";
 import Bool "mo:base/Bool";
 import Array "mo:base/Array";
 import DateTime "mo:datetime/DateTime";
+import Source "mo:uuid/async/SourceV4";
+import uuid "mo:uuid/UUID";
 
 module {
     public func checkAnonymous(_caller : Principal) : async () {
@@ -29,6 +31,11 @@ module {
                 return true;
             };
         };
+    };
+
+    public func getUuid() : async Text {
+        let g = Source.Source();
+        uuid.toText(await g.new());
     };
 
 };

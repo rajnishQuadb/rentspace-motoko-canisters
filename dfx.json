@@ -3,6 +3,10 @@
     "User": {
       "main": "src/TestMotoko_backend/controllers/userCanister.mo",
       "type": "motoko"
+    },
+    "Comment":{
+      "main": "src/TestMotoko_backend/controllers/commentCanister.mo",
+      "type": "motoko"
     }
   },
   "defaults": {
