@@ -24,10 +24,5 @@ dfx canister call User checkUserExist '("sfwko-hd7us-gen5t-ssuci-vfjwf-afepb-a7p
 # dfx canister call Hotel deleteHotel '("sfwko-hd7us-gen5t-ssuci-vfjwf-afepb-a7p4y-guh5l-s5n2e-zuxvt-dae#4def40ad-142e-40d2-bb8a-f830f479f9ac")'
 # dfx canister call Hotel getHotel '("sfwko-hd7us-gen5t-ssuci-vfjwf-afepb-a7p4y-guh5l-s5n2e-zuxvt-dae#4def40ad-142e-40d2-bb8a-f830f479f9ac")'
 
-# dfx canister call Hotel whoami
 
-# dfx canister call Hotel checkHotelExist '("sfwko-hd7us-gen5t-ssuci-vfjwf-afepb-a7p4y-guh5l-s5n2e-zuxvt-dae#71c898a9-e96a-4872-b290-814b82295731")'
-
-# dfx canister call Hotel getNumberofHotels
-# dfx canister call Hotel getAllHotels '(10,1)'
 
