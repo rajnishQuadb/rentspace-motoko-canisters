@@ -19,7 +19,7 @@ shared ({ caller = owner }) actor class () {
     var hotelRecord = TrieMap.TrieMap<HotelModal.HotelId, HotelModal.HotelInfo>(Text.equal, Text.hash);
     var hotelIdMap = TrieMap.TrieMap<HotelModal.UserId, [HotelModal.HotelId]>(Text.equal, Text.hash);
     var hotelRegisterFrequencyMap = TrieMap.TrieMap<HotelModal.Year, HotelModal.AnnualData>(Text.equal, Text.hash);
-    var admin : [HotelModal.AdminId] = []; // make it stable array for main net
+    // var admin : [HotelModal.AdminId] = []; // make it stable array for main net
 
     var hotelRoomRecord = TrieMap.TrieMap<HotelModal.HotelId, HotelModal.RoomType>(Text.equal, Text.hash);
 

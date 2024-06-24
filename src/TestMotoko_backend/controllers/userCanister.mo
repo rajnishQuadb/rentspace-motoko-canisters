@@ -6,7 +6,7 @@ import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Result "mo:base/Result";
 import Error "mo:base/Error";
-import Debug "mo:base/Debug";
+// import Debug "mo:base/Debug";
 import Time "mo:base/Time";
 import Char "mo:base/Char";
 import Bool "mo:base/Bool";
@@ -186,7 +186,8 @@ shared ({ caller = owner }) actor class User() {
     // Get anual registered users
     public shared ({ caller }) func getAnnualRegisterByYear(year : Text) : async Result.Result<UserModal.AnnualData, Text> {
         try {
-            if (UtilityFunc.getAdminFromArray(caller, admin) == false) {
+            let isAdmin = await UtilityFunc.getAdminFromArray(caller, admin);
+            if (isAdmin == false) {
                 return #err("User not authorized to access this data");
             };
             switch (anualRegisterFrequency.get(year)) {
