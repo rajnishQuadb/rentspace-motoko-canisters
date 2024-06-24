@@ -26,7 +26,7 @@ shared ({caller=owner}) actor class Support(){
             //check is user exists
             await UtilityFunc.checkAnonymous(caller);
             let uuid=await UtilityFunc.getUuid();
-            let newTicketId= Principal.toText(caller) # uuid;
+            let newTicketId= Principal.toText(caller) # "#" # uuid;
             let time=DateTime.DateTime(Time.now()).toText();
             let newTicket:SupportTypes.Ticket={
                 ticketId=newTicketId;

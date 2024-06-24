@@ -21,7 +21,7 @@ shared({caller=owner}) actor class Review(){
         try{
             await UtilityFunc.checkAnonymous(caller);
             let time=DateTime.DateTime(Time.now()).toText();
-            let reviewId=hotelId # Principal.toText(caller);
+            let reviewId=hotelId # "#" # Principal.toText(caller);
             let newReview:ReviewTypes.Review={
                 reviewId=reviewId;
                 userId=Principal.toText(caller);

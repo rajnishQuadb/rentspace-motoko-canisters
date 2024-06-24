@@ -24,7 +24,7 @@ shared ({caller=owner}) actor class Comment(){
             await UtilityFunc.checkAnonymous(caller);
             let uuid = await UtilityFunc.getUuid();
             let time=DateTime.DateTime(Time.now()).toText();
-            let newCommentId = hotelId # uuid;
+            let newCommentId = hotelId # "#" # uuid;
             let newComment:CommentTypes.Comment={
                 comment=comment.message;
                 hotelId=hotelId;
