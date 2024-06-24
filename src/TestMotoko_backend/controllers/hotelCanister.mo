@@ -23,7 +23,7 @@ shared ({ caller = owner }) actor class () {
     var hotelRecord = TrieMap.TrieMap<HotelTypes.HotelId, HotelTypes.HotelInfo>(Text.equal, Text.hash);
     var hotelIdMap = TrieMap.TrieMap<HotelTypes.UserId, [HotelTypes.HotelId]>(Text.equal, Text.hash);
     var hotelRegisterFrequencyMap = TrieMap.TrieMap<HotelTypes.Year, HotelTypes.AnnualData>(Text.equal, Text.hash);
-    var admin : [HotelTypes.AdminId] = []; // make it stable array for main net
+    // var admin : [HotelTypes.AdminId] = []; // make it stable array for main net
 
     var hotelRoomRecord = TrieMap.TrieMap<HotelTypes.HotelId, HotelTypes.RoomType>(Text.equal, Text.hash);
 
@@ -280,10 +280,12 @@ shared ({ caller = owner }) actor class () {
     // get number of hotels
     public shared ({ caller }) func getNumberofHotels() : async Result.Result<Nat, Text> {
         try {
-            let isAdmin = await checkIsAdmin(caller);
-            if (isAdmin == false) {
-                return #err("You are not authorized to access this function");
-            };
+            // let isAdmin = await checkIsAdmin(caller);
+            // if (isAdmin == false) {
+            //     return #err("You are not authorized to access this function");
+            // };
+            await UtilityFunc.checkAnonymous(caller);
+
             return #ok(hotelRecord.size());
 
         } catch e {
@@ -294,10 +296,11 @@ shared ({ caller = owner }) actor class () {
     // get all hotels
     public shared ({ caller }) func getAllHotels(size : Nat, pageNo : Nat) : async Result.Result<[(HotelTypes.HotelId,HotelTypes.HotelInfo)], Text> {
         try {
-            let isAdmin = await checkIsAdmin(caller);
-            if (isAdmin == false) {
-                return #err("You are not authorized to access this function");
-            };
+            // let isAdmin = await checkIsAdmin(caller);
+            // if (isAdmin == false) {
+            //     return #err("You are not authorized to access this function");
+            // };
+            await UtilityFunc.checkAnonymous(caller);
             if (pageNo < 1) {
                 return #err("Invalid Page Number, Page Number starts from 1");
             };
@@ -324,15 +327,15 @@ shared ({ caller = owner }) actor class () {
     };
 
     // checks if the principal passed is an admin or not
-    public query func checkIsAdmin(caller : Principal) : async Bool {
-        switch (Array.find<HotelTypes.AdminId>(admin, func(x) : Bool { x == caller })) {
-            case (null) {
-                return false;
-            };
-            case (?r) {
-                return true;
-            };
-        };
-    };
+    // public query func checkIsAdmin(caller : Principal) : async Bool {
+    //     switch (Array.find<HotelTypes.AdminId>(admin, func(x) : Bool { x == P(caller) })) {
+    //         case (null) {
+    //             return false;
+    //         };
+    //         case (?r) {
+    //             return true;
+    //         };
+    //     };
+    // };
 
 };
