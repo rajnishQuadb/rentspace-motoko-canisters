@@ -7,28 +7,32 @@ import Error "mo:base/Error";
 import Debug "mo:base/Debug";
 import Time "mo:base/Time";
 import Char "mo:base/Char";
+import Array "mo:base/Array";
+import Nat "mo:base/Nat";
+import Iter "mo:base/Iter";
+import Int "mo:base/Int";
 import DateTime "mo:datetime/DateTime";
-import HotelModal "../modals/hotelModal";
 import UtilityFunc "../utils/utilityFunc";
 import Month "../utils/month";
+import HotelTypes "../types/hotelTypes";
 
 shared ({ caller = owner }) actor class () {
 
     var userCanisterID = "bd3sg-teaaa-aaaaa-qaaba-cai";
 
-    var hotelRecord = TrieMap.TrieMap<HotelModal.HotelId, HotelModal.HotelInfo>(Text.equal, Text.hash);
-    var hotelIdMap = TrieMap.TrieMap<HotelModal.UserId, [HotelModal.HotelId]>(Text.equal, Text.hash);
-    var hotelRegisterFrequencyMap = TrieMap.TrieMap<HotelModal.Year, HotelModal.AnnualData>(Text.equal, Text.hash);
-    // var admin : [HotelModal.AdminId] = []; // make it stable array for main net
+    var hotelRecord = TrieMap.TrieMap<HotelTypes.HotelId, HotelTypes.HotelInfo>(Text.equal, Text.hash);
+    var hotelIdMap = TrieMap.TrieMap<HotelTypes.UserId, [HotelTypes.HotelId]>(Text.equal, Text.hash);
+    var hotelRegisterFrequencyMap = TrieMap.TrieMap<HotelTypes.Year, HotelTypes.AnnualData>(Text.equal, Text.hash);
+    var admin : [HotelTypes.AdminId] = []; // make it stable array for main net
 
-    var hotelRoomRecord = TrieMap.TrieMap<HotelModal.HotelId, HotelModal.RoomType>(Text.equal, Text.hash);
+    var hotelRoomRecord = TrieMap.TrieMap<HotelTypes.HotelId, HotelTypes.RoomType>(Text.equal, Text.hash);
 
     // creating refrence for user canister
     let userActor = actor (userCanisterID) : actor {
         checkUserExist : query (Text) -> async (Bool);
     };
 
-    func hotelValidator(hotelData : HotelModal.HotelInfo) {
+    func hotelValidator(hotelData : HotelTypes.HotelInfo) {
         if (
             UtilityFunc.validText(hotelData.hotelTitle, 40) == false or
             UtilityFunc.validText(hotelData.hotelDes, 300) == false or
@@ -39,7 +43,7 @@ shared ({ caller = owner }) actor class () {
     };
 
     // create hotel
-    public shared ({ caller }) func createHotel(hotelData : HotelModal.HotelInfo, roomData : HotelModal.RoomType) : async Result.Result<Text, Text> {
+    public shared ({ caller }) func createHotel(hotelData : HotelTypes.HotelInfo, roomData : HotelTypes.RoomType) : async Result.Result<Text, Text> {
         try {
             await UtilityFunc.checkAnonymous(caller);
             hotelValidator(hotelData);
@@ -95,7 +99,7 @@ shared ({ caller = owner }) actor class () {
 
             // hotel ID creation
             let uuid = await UtilityFunc.getUuid();
-            let hotelId : HotelModal.HotelId = userIdentity # "#" # uuid;
+            let hotelId : HotelTypes.HotelId = userIdentity # "#" # uuid;
 
             // update hotelIdMap with new hotelId
             switch (hotelIdMap.get(userIdentity)) {
@@ -111,7 +115,7 @@ shared ({ caller = owner }) actor class () {
 
             let getDate = UtilityFunc.getDate();
 
-            let newHotelInfo : HotelModal.HotelInfo = {
+            let newHotelInfo : HotelTypes.HotelInfo = {
                 hotelId = hotelId;
                 hotelTitle = hotelData.hotelTitle;
                 hotelDes = hotelData.hotelDes;
@@ -133,7 +137,7 @@ shared ({ caller = owner }) actor class () {
     };
 
     // get hotel by hotelId
-    public query func getHotel(hotelId : HotelModal.HotelId) : async Result.Result<HotelModal.HotelInfo, Text> {
+    public query func getHotel(hotelId : HotelTypes.HotelId) : async Result.Result<HotelTypes.HotelInfo, Text> {
         try {
             switch (hotelRecord.get(hotelId)) {
                 case (null) {
@@ -149,7 +153,7 @@ shared ({ caller = owner }) actor class () {
     };
 
     // get room by hotelId
-    public query func getRoom(hotelId : HotelModal.HotelId) : async Result.Result<HotelModal.RoomType, Text> {
+    public query func getRoom(hotelId : HotelTypes.HotelId) : async Result.Result<HotelTypes.RoomType, Text> {
         try {
             switch (hotelRoomRecord.get(hotelId)) {
                 case (null) {
@@ -165,7 +169,7 @@ shared ({ caller = owner }) actor class () {
     };
 
     // update hotel
-    public shared ({ caller }) func updateHotel(hotelData : HotelModal.HotelInfo, roomData : HotelModal.RoomType) : async Result.Result<Text, Text> {
+    public shared ({ caller }) func updateHotel(hotelData : HotelTypes.HotelInfo, roomData : HotelTypes.RoomType) : async Result.Result<Text, Text> {
         try {
             await UtilityFunc.checkAnonymous(caller);
             hotelValidator(hotelData);
@@ -181,7 +185,7 @@ shared ({ caller = owner }) actor class () {
                     return #err("Hotel Not Found" # " ==> " # hotelData.hotelId);
                 };
                 case (?r) {
-                    let updatedHotelInfo : HotelModal.HotelInfo = {
+                    let updatedHotelInfo : HotelTypes.HotelInfo = {
                         hotelId = r.hotelId;
                         hotelTitle = hotelData.hotelTitle;
                         hotelDes = hotelData.hotelDes;
@@ -207,15 +211,15 @@ shared ({ caller = owner }) actor class () {
     };
 
     // delete hotel
-    public shared ({caller}) func deleteHotel(hotelId : HotelModal.HotelId) : async Result.Result<Text,Text>{
-        try{
+    public shared ({ caller }) func deleteHotel(hotelId : HotelTypes.HotelId) : async Result.Result<Text, Text> {
+        try {
             await UtilityFunc.checkAnonymous(caller);
 
-            switch(hotelRecord.get(hotelId)){
-                case(null){
+            switch (hotelRecord.get(hotelId)) {
+                case (null) {
                     return #err("Hotel Not Found");
                 };
-                case(?result){
+                case (?result) {
                     ignore hotelRecord.remove(hotelId);
                     ignore hotelRoomRecord.remove(hotelId);
 
@@ -233,16 +237,15 @@ shared ({ caller = owner }) actor class () {
 
                     return #ok("Hotel Deleted Successfully");
                 };
-            }
+            };
 
-        }
-        catch e{
+        } catch e {
             return #err(Error.message(e));
         };
     };
 
     // get Hotel Register Frequency Data
-    public query func getHotelRegisterFrequencyData(year : HotelModal.Year) : async Result.Result<HotelModal.AnnualData, Text> {
+    public query func getHotelRegisterFrequencyData(year : HotelTypes.Year) : async Result.Result<HotelTypes.AnnualData, Text> {
         try {
             switch (hotelRegisterFrequencyMap.get(year)) {
                 case (null) {
@@ -257,6 +260,79 @@ shared ({ caller = owner }) actor class () {
         };
     };
 
-    
+    // whoami
+    public shared ({ caller }) func whoami() : async Text {
+        return Principal.toText(caller);
+    };
+
+    // chechHotelExist
+    public query func checkHotelExist(hotelId : HotelTypes.HotelId) : async Bool {
+        switch (hotelRecord.get(hotelId)) {
+            case (null) {
+                return false;
+            };
+            case (?result) {
+                return true;
+            };
+        };
+    };
+
+    // get number of hotels
+    public shared ({ caller }) func getNumberofHotels() : async Result.Result<Nat, Text> {
+        try {
+            let isAdmin = await checkIsAdmin(caller);
+            if (isAdmin == false) {
+                return #err("You are not authorized to access this function");
+            };
+            return #ok(hotelRecord.size());
+
+        } catch e {
+            return #err(Error.message(e));
+        };
+    };
+
+    // get all hotels
+    public shared ({ caller }) func getAllHotels(size : Nat, pageNo : Nat) : async Result.Result<[(HotelTypes.HotelId,HotelTypes.HotelInfo)], Text> {
+        try {
+            let isAdmin = await checkIsAdmin(caller);
+            if (isAdmin == false) {
+                return #err("You are not authorized to access this function");
+            };
+            if (pageNo < 1) {
+                return #err("Invalid Page Number, Page Number starts from 1");
+            };
+
+            let hotelIter = hotelRecord.entries();
+            let hotelArr = Iter.toArray(hotelIter);
+            var startIndex : Int = 0;
+            if (pageNo > 1) {
+                startIndex := (pageNo - 1) * 10;
+            };
+            var endIndex : Int = startIndex + size;
+            if (startIndex > hotelArr.size()) {
+                return #err("Page Number is out of range");
+            };
+            if (endIndex > hotelArr.size()) {
+                endIndex := hotelArr.size();
+            };
+            let filteredHotels = Iter.toArray(Array.slice(hotelArr, Int.abs(startIndex), Int.abs(endIndex)));
+            
+            return #ok(filteredHotels);
+        } catch e {
+            return #err(Error.message(e));
+        };
+    };
+
+    // checks if the principal passed is an admin or not
+    public query func checkIsAdmin(caller : Principal) : async Bool {
+        switch (Array.find<HotelTypes.AdminId>(admin, func(x) : Bool { x == caller })) {
+            case (null) {
+                return false;
+            };
+            case (?r) {
+                return true;
+            };
+        };
+    };
 
 };

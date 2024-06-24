@@ -1,26 +1,23 @@
-import UserModal "../modals/userModal";
 import UtilityFunc "../utils/utilityFunc";
-
 import TrieMap "mo:base/TrieMap";
 import Principal "mo:base/Principal";
 import Text "mo:base/Text";
 import Result "mo:base/Result";
 import Error "mo:base/Error";
-// import Debug "mo:base/Debug";
 import Time "mo:base/Time";
 import Char "mo:base/Char";
 import Bool "mo:base/Bool";
 import DateTime "mo:datetime/DateTime";
 import Month "../utils/month";
-// import UserTypes "../types/userTypes";
+import UserTypes "../types/userTypes";
 
 shared ({ caller = owner }) actor class User() {
-    var userRecord = TrieMap.TrieMap<Principal, UserModal.UserInfo>(Principal.equal, Principal.hash);
-    var anualRegisterFrequency = TrieMap.TrieMap<UserModal.Year, UserModal.AnnualData>(Text.equal, Text.hash);
-    var admin : [UserModal.AdminId] = []; // make it stable array for main net
+    var userRecord = TrieMap.TrieMap<Principal, UserTypes.UserInfo>(Principal.equal, Principal.hash);
+    var anualRegisterFrequency = TrieMap.TrieMap<UserTypes.Year, UserTypes.AnnualData>(Text.equal, Text.hash);
+    var admin : [UserTypes.AdminId] = []; // make it stable array for main net
 
     // Register a new user
-    public shared ({ caller }) func registerUser(userData : UserModal.User) : async Result.Result<Text, Text> {
+    public shared ({ caller }) func registerUser(userData : UserTypes.User) : async Result.Result<Text, Text> {
         try {
             await UtilityFunc.checkAnonymous(caller);
             switch (userRecord.get(caller)) {
@@ -71,7 +68,7 @@ shared ({ caller = owner }) actor class User() {
                     };
 
                     //----------------------
-                    let newUser : UserModal.UserInfo = {
+                    let newUser : UserTypes.UserInfo = {
                         userID = caller;
                         firstName = userData.firstName;
                         lastName = userData.lastName;
@@ -100,7 +97,7 @@ shared ({ caller = owner }) actor class User() {
     };
 
     // Get user details
-    public shared ({ caller }) func getuserDetails() : async Result.Result<UserModal.UserInfo, Text> {
+    public shared ({ caller }) func getuserDetails() : async Result.Result<UserTypes.UserInfo, Text> {
         try {
             await UtilityFunc.checkAnonymous(caller);
             switch (userRecord.get(caller)) {
@@ -117,7 +114,7 @@ shared ({ caller = owner }) actor class User() {
     };
 
     // Update user details
-    public shared ({ caller }) func updateUserDetails(userData : UserModal.UserInfo) : async Result.Result<Text, Text> {
+    public shared ({ caller }) func updateUserDetails(userData : UserTypes.UserInfo) : async Result.Result<Text, Text> {
         try {
             await UtilityFunc.checkAnonymous(caller);
             switch (userRecord.get(caller)) {
@@ -125,7 +122,7 @@ shared ({ caller = owner }) actor class User() {
                     return #err("User not found");
                 };
                 case (?user) {
-                    let updateData : UserModal.UserInfo = {
+                    let updateData : UserTypes.UserInfo = {
                         userID = caller;
                         firstName = userData.firstName;
                         lastName = userData.lastName;
@@ -168,7 +165,7 @@ shared ({ caller = owner }) actor class User() {
     };
 
     // Get user by Principal
-    public func getUserByPrincipal(principal : Principal) : async Result.Result<UserModal.UserInfo, Text> {
+    public func getUserByPrincipal(principal : Principal) : async Result.Result<UserTypes.UserInfo, Text> {
         try {
             switch (userRecord.get(principal)) {
                 case (null) {
@@ -184,7 +181,7 @@ shared ({ caller = owner }) actor class User() {
     };
 
     // Get anual registered users
-    public shared ({ caller }) func getAnnualRegisterByYear(year : Text) : async Result.Result<UserModal.AnnualData, Text> {
+    public shared ({ caller }) func getAnnualRegisterByYear(year : Text) : async Result.Result<UserTypes.AnnualData, Text> {
         try {
             let isAdmin = await UtilityFunc.getAdminFromArray(caller, admin);
             if (isAdmin == false) {
