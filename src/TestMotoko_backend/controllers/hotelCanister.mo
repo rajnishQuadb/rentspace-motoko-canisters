@@ -18,7 +18,7 @@ import HotelTypes "../types/hotelTypes";
 
 shared ({ caller = owner }) actor class () {
 
-    var userCanisterID = "bd3sg-teaaa-aaaaa-qaaba-cai";
+    // var userCanisterID = "bd3sg-teaaa-aaaaa-qaaba-cai";
 
     var hotelRecord = TrieMap.TrieMap<HotelTypes.HotelId, HotelTypes.HotelInfo>(Text.equal, Text.hash);
     var hotelIdMap = TrieMap.TrieMap<HotelTypes.UserId, [HotelTypes.HotelId]>(Text.equal, Text.hash);
@@ -28,9 +28,9 @@ shared ({ caller = owner }) actor class () {
     var hotelRoomRecord = TrieMap.TrieMap<HotelTypes.HotelId, HotelTypes.RoomType>(Text.equal, Text.hash);
 
     // creating refrence for user canister
-    let userActor = actor (userCanisterID) : actor {
-        checkUserExist : query (Text) -> async (Bool);
-    };
+    // let userActor = actor (userCanisterID) : actor {
+    //     checkUserExist : query (Text) -> async (Bool);
+    // };
 
     func hotelValidator(hotelData : HotelTypes.HotelInfo) {
         if (
@@ -49,11 +49,11 @@ shared ({ caller = owner }) actor class () {
             hotelValidator(hotelData);
 
             let userIdentity = Principal.toText(caller);
-            let isUserExist = await userActor.checkUserExist(userIdentity);
-            if (isUserExist == false) {
-                // throw "User Not Exist";
-                return #err("User Not Exist");
-            };
+            // let isUserExist = await userActor.checkUserExist(userIdentity);
+            // if (isUserExist == false) {
+            //     // throw "User Not Exist";
+            //     return #err("User Not Exist");
+            // };
 
             // anual register frequency update
             let date = DateTime.DateTime(Time.now()).toText();
@@ -175,10 +175,10 @@ shared ({ caller = owner }) actor class () {
             hotelValidator(hotelData);
 
             let userIdentity = Principal.toText(caller);
-            let isUserExist = await userActor.checkUserExist(userIdentity);
-            if (isUserExist == false) {
-                return #err("User Not Exist");
-            };
+            // let isUserExist = await userActor.checkUserExist(userIdentity);
+            // if (isUserExist == false) {
+            //     return #err("User Not Exist");
+            // };
 
             switch (hotelRecord.get(hotelData.hotelId)) {
                 case (null) {

@@ -1,8 +1,9 @@
-import UserModal "../modals/userModal";
+// import UserTypes "../modals/UserTypes";
 import Text "mo:base/Text";
+import UserTypes "../types/userTypes";
 
 module{
-    public func updateMonthData(month: Text, annualData : UserModal.AnnualData) : UserModal.AnnualData{
+    public func updateMonthData(month: Text, annualData : UserTypes.AnnualData) : UserTypes.AnnualData{
         if (month == "1") {
             return {
                 jan = annualData.jan + 1;
